@@ -15,9 +15,9 @@ function App() {
 
     <div className=" bg-black text-white min-h-screen flex items-center justify-center">
      <Routes>
-      {/* <Route element={<ProtectedRoutes />}> */}
+      <Route element={<ProtectedRoutes />}>
       <Route path="/" element={<Dashboard />} />
-      {/* </Route> */}
+      </Route>
       <Route path="/Login" element={<Login />} />
       <Route path="/register" element={<Register />} />
      </Routes>
