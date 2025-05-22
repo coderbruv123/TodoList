@@ -21,7 +21,7 @@ const TodoList = () => {
 
   const handleView = (id: number) => {
     setOpenId(openId === id ? null : id);
-    setEditId(null); // Close edit if open
+    setEditId(null); 
   };
 
   const handleEdit = (todo: Todos) => {
@@ -58,18 +58,53 @@ const TodoList = () => {
   }
 };
 
+const handleToggleCompleted = async (todo: Todos) => {
+  setLoading(true);
+  setError(null);
+  try {
+    await updateTodo(String(todo.id), {
+      ...todo,
+      isCompleted: !todo.isCompleted,
+    });
+    setTodos((prev) =>
+      prev.map((t) =>
+        t.id === todo.id ? { ...t, isCompleted: !t.isCompleted } : t
+      )
+    );
+  } catch (err) {
+    setError("Failed to update status.");
+  } finally {
+    setLoading(false);
+  }
+};
+
   const handleEditCancel = () => {
     setEditId(null);
   };
+  
 
   return (
     <div className="mt-6">
       <h2 className="text-xl text-white mb-4">Todo List</h2>
       <div className="space-y-4">
+        
         {todos.map((todo) => (
           <div key={todo.id} className="bg-gray-800 text-white p-4 rounded flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className="font-bold">{todo.title}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleToggleCompleted(todo)}
+                  className={`w-5 h-5 rounded-full border-2 flex-shrink-0 focus:outline-none transition-colors ${
+                    todo.isCompleted ? "bg-green-500 border-green-500" : "bg-gray-700 border-gray-400"
+                  }`}
+                  title={todo.isCompleted ? "Mark as incomplete" : "Mark as completed"}
+                  aria-label="Toggle completed"
+                  disabled={loading}
+                />
+                <span className={`font-bold ${todo.isCompleted ? "line-through text-gray-400" : ""}`}>
+                  {todo.title}
+                </span>
+              </div>
               <button
                 className="bg-blue-500 py-1 px-2"
                 onClick={() => handleView(todo.id)}
